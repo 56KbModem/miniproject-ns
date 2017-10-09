@@ -1,6 +1,5 @@
 import requests
 import xmltodict
-import datetime
 
 # Authenticatie voor de NS-API @ webservices.ns.nl
 auth_details = ('nick.snel@student.hu.nl', 'CHXwsKlQhEhr4REC2N_wqkS4oxI8SakCb4njn8tIPopejiHJZFj5Lw')
@@ -26,15 +25,16 @@ def get_request(station):
 # This will return a text structure, or maybe we will choose to
 # directly return the dict declared above.
 	for item in xml_reader['ActueleVertrekTijden']['VertrekkendeTrein']:
-		text_struct = "\nRitnr:\tBestemming\n"
-		text_struct += "{0}:\t{1}\n".format(item['RitNummer'], item['EindBestemming'])
-		text_struct += "Vertrek:\n"
-		vertrek_tijd = item['VertrekTijd']
-		datum , tijd = vertrek_tijd.split("T")
-		text_struct += (datum + "\n")
-		text_struct += (tijd)
-
-		return text_struct
+		#text_struct = "\nRitnr:\tBestemming\n"
+		#text_struct += "{0}:\t{1}\n".format(item['RitNummer'], item['EindBestemming'])
+		#text_struct += "Vertrek:\n"
+		#vertrek_tijd = item['VertrekTijd']
+		#datum , tijd = vertrek_tijd.split("T")
+		#text_struct += (datum + "\n")
+		#text_struct += (tijd)
+		pass
+	return xml_reader
+	
 
 # Check if directly called by interpreter for prototyping,
 # if not called directly but by script then the functions
