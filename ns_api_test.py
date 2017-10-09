@@ -26,10 +26,10 @@ def get_request(station):
 # directly return the dict declared above.
 	for item in xml_reader['ActueleVertrekTijden']['VertrekkendeTrein']:
 		return_dict = {}
-		return_dict[rit_nr] = item['RitNummer']
-		return_dict[eind_best] = item['EindBestemming']
-		return_dict[vertrek_tijd] = item['VertrekTijd']
-		return_dict[trein_soort] = item['TreinSoort']
+		return_dict['rit_nr'] = item['RitNummer']
+		return_dict['eind_best'] = item['EindBestemming']
+		return_dict['vertrek_tijd'] = item['VertrekTijd']
+		return_dict['trein_soort'] = item['TreinSoort']
 
 	return return_dict
 
