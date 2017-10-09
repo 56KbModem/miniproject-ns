@@ -25,16 +25,13 @@ def get_request(station):
 # This will return a text structure, or maybe we will choose to
 # directly return the dict declared above.
 	for item in xml_reader['ActueleVertrekTijden']['VertrekkendeTrein']:
-		#text_struct = "\nRitnr:\tBestemming\n"
-		#text_struct += "{0}:\t{1}\n".format(item['RitNummer'], item['EindBestemming'])
-		#text_struct += "Vertrek:\n"
-		#vertrek_tijd = item['VertrekTijd']
-		#datum , tijd = vertrek_tijd.split("T")
-		#text_struct += (datum + "\n")
-		#text_struct += (tijd)
-		pass
-	return xml_reader
-	
+		return_dict = {}
+		return_dict[rit_nr] = item['RitNummer']
+		return_dict[eind_best] = item['EindBestemming']
+		return_dict[vertrek_tijd] = item['VertrekTijd']
+		return_dict[trein_soort] = item['TreinSoort']
+
+	return return_dict
 
 # Check if directly called by interpreter for prototyping,
 # if not called directly but by script then the functions
