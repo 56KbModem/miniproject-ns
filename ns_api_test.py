@@ -29,7 +29,11 @@ def get_request(station):
 		return_dict = {}
 		return_dict['rit_nr'] = item['RitNummer']
 		return_dict['eind_best'] = item['EindBestemming']
-		return_dict['vertrek_tijd'] = item['VertrekTijd']
+
+		datum, tijd = item['VertrekTijd'].split("T")
+		tijd = tijd.replace("+0200", '')
+
+		return_dict['vertrek_tijd'] = datum + " " + tijd
 		return_dict['trein_soort'] = item['TreinSoort']
 		vertrekkende_treinen.append(return_dict)
 
