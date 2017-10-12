@@ -1,6 +1,6 @@
+
 import requests
 import xmltodict
-import datetime
 
 # Authenticatie voor de NS-API @ webservices.ns.nl
 auth_details = ('nick.snel@student.hu.nl', 'CHXwsKlQhEhr4REC2N_wqkS4oxI8SakCb4njn8tIPopejiHJZFj5Lw')
@@ -23,18 +23,22 @@ def get_request(station):
 	response = requests.get(request_url, auth=auth_details)
 	xml_reader = xmltodict.parse(response.text)
 
-# This will return a text structure, or maybe we will choose to
-# directly return the dict declared above.
+	# This will return a list of all dictionaries
+	# containing information about leaving trains.
+	vertrekkende_treinen = []
 	for item in xml_reader['ActueleVertrekTijden']['VertrekkendeTrein']:
-		text_struct = "\nRitnr:\tBestemming\n"
-		text_struct += "{0}:\t{1}\n".format(item['RitNummer'], item['EindBestemming'])
-		text_struct += "Vertrek:\n"
-		vertrek_tijd = item['VertrekTijd']
-		datum , tijd = vertrek_tijd.split("T")
-		text_struct += (datum + "\n")
-		text_struct += (tijd)
+		return_dict = {}
+		return_dict['rit_nr'] = item['RitNummer']
+		return_dict['eind_best'] = item['EindBestemming']
 
-		return text_struct
+		datum, tijd = item['VertrekTijd'].split("T")
+		tijd = tijd.replace("+0200", '')
+
+		return_dict['vertrek_tijd'] = datum + " " + tijd
+		return_dict['trein_soort'] = item['TreinSoort']
+		vertrekkende_treinen.append(return_dict)
+
+	return vertrekkende_treinen
 
 # Check if directly called by interpreter for prototyping,
 # if not called directly but by script then the functions

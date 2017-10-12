@@ -6,25 +6,19 @@ def get_station():
     request = ns_api_test.get_request(station)
 
     # Clear listboxes before new request
-    eindb_listbox.delete(0, END)
-    vertrek_listbox.delete(0, END)
-    trein_listbox.delete(0, END)
-    ritnummer_listbox.delete(0, END)
+    output_listbox.delete(0, END)
 
     for item in request:
-        eindb_listbox.insert(END, item['eind_best'])
-        vertrek_listbox.insert(END, item['vertrek_tijd'])
-        trein_listbox.insert(END, item['trein_soort'])
-        ritnummer_listbox.insert(END, item['rit_nr'])
+        output_listbox.insert(END, '{:<35} {:<40} {:<20} {:>10}'.format(item['eind_best'], item['vertrek_tijd'], item['trein_soort'], item['rit_nr']))
 
 root = Tk()
 root.title('NS Reisinformatie')
 root.geometry('700x400')
 root.resizable(width=False, height=False)
-
+root.configure(background='yellow')
 # Input box
 input_box = Frame(root, height=40, width=420, bd=2, relief=SUNKEN)
-input_box.place(x=2, y=2)
+input_box.place(x=10, y=10)
 
 # Enter Station Label
 info_label = Label(input_box, text='Voer een station in: ')
@@ -38,36 +32,33 @@ station_entry.place(x=140, y=5)
 station_submit = Button(input_box, text='Bevestig', command=get_station)
 station_submit.place(x=330, y=5)
 
-# Eindbestemming label
-eindb_label = Label(root, text='Eindbestemming')
-eindb_label.place(x=10, y=50)
+# Output box
+output_box = Frame(root, height=215, width=680, bd=2, relief=SUNKEN)
+output_box.place(x=10, y=55)
 
-# Eindbestemming listbox
-eindb_listbox = Listbox(root)
-eindb_listbox.place(x=10, y=70)
+# Eindbestemming label
+eindb_label = Label(output_box, text='Eindbestemming')
+eindb_label.place(x=10, y=5)
 
 # Vertrektijd label
-vertrek_label = Label(root, text='Vertrektijd')
-vertrek_label.place(x=160, y=50)
+vertrek_label = Label(output_box, text='Vertrektijd')
+vertrek_label.place(x=250, y=5)
 
-# Vertrektijd listbox
-vertrek_listbox = Listbox(root, width=40)
-vertrek_listbox.place(x=160, y=70)
+# Soort trein label
+soort_trein_label = Label(output_box, text='Soort trein')
+soort_trein_label.place(x=400, y=5)
 
-# Trein soort label
-trein_label = Label(root, text='Soort trein')
-trein_label.place(x=360, y=50)
+# Rit nummer label
+rit_nr_label = Label(output_box, text='Rit nummer')
+rit_nr_label.place(x=500, y=5)
 
-# Trein soort listbox
-trein_listbox = Listbox(root)
-trein_listbox.place(x=360, y=70)
+# Scrollbar for output
+scrollbar = Scrollbar(output_box)
+scrollbar.place(x=651, y=25, height=173)
 
-# ritnummer label
-ritnummer_label = Label(root, text='Ritnummer')
-ritnummer_label.place(x=430, y=50)
+# Output listbox
+output_listbox = Listbox(output_box, yscrollcommand = scrollbar.set ,width=80)
+output_listbox.place(x=10, y=25)
 
-# ritnummer listbox
-ritnummer_listbox = Listbox(root)
-ritnummer_listbox.place(x=430, y=70)
 
 root.mainloop()
