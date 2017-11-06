@@ -1,5 +1,7 @@
 {
-  "requests": 1,
-  "last_search": "none",
-  "last_search_time": "none"
+	"api_username": "PLACE USERNAME HERE",
+	"api_key": "PLACE KEY HERE",
+	"requests": 1,
+	"last_search": "none",
+	"last_search_time": "none"
 }

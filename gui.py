@@ -1,9 +1,13 @@
 from tkinter import *
-import ns_api_test
+import json
+import api_interface
+
+# Variable settings
+json_config = 'config.json'
 
 def get_station():
     station = station_entry.get()
-    request = ns_api_test.get_request(station)
+    request = api_interface.get_request(station)
 
     # Clear listboxes before new request
     output_listbox.delete(0, END)
@@ -11,11 +15,17 @@ def get_station():
     for item in request:
         output_listbox.insert(END, '{:<35} {:<40} {:<20} {:>10}'.format(item['eind_best'], item['vertrek_tijd'], item['trein_soort'], item['rit_nr']))
 
+# Setup Tkinter window
 root = Tk()
 root.title('NS Reisinformatie')
 root.geometry('700x400')
 root.resizable(width=False, height=False)
 root.configure(background='yellow')
+
+with open(json_config) as config_file:
+	d = json.load(config_file)
+	print(d)
+
 # Input box
 input_box = Frame(root, height=40, width=420, bd=2, relief=SUNKEN)
 input_box.place(x=10, y=10)
