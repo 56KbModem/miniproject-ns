@@ -1,5 +1,7 @@
 import requests
 import xmltodict
+import json
+from time import localtime, strftime
 
 # Authentication for NS-API @ webservices.ns.nl
 auth_details = ('nick.snel@student.hu.nl', 'CHXwsKlQhEhr4REC2N_wqkS4oxI8SakCb4njn8tIPopejiHJZFj5Lw')
@@ -22,6 +24,11 @@ def get_request(station):
 	request_url = url + station
 	response = requests.get(request_url, auth=auth_details)
 	xml_reader = xmltodict.parse(response.text)
+
+	# Add events for json file.
+	event_list = {'last_query': request_url}
+	event_list['last_query_time'] = strftime("%Y-%m-%d %H:%M:%S", localtime())
+	json_handler(event_list)
 
 	# This will return a list of all dictionaries
 	# containing information about leaving trains.
@@ -49,6 +56,11 @@ def reis_planner(from_station, to_station):
 	response =  requests.get(request_url, auth=auth_details)
 	xml_reader = xmltodict.parse(response.text)
 
+	# Add events for json file.
+	event_list = {'last_query': request_url}
+	event_list['last_query_time'] = strftime("%Y-%m-%d %H:%M:%S", localtime())
+	json_handler(event_list)
+
 	for item in xml_reader['ReisMogelijkheden']['ReisMogelijkheid']:
 		if item['Optimaal'] == 'true':
 			return_dict = {}
@@ -56,16 +68,34 @@ def reis_planner(from_station, to_station):
 
 			# Format 'vertrek_tijd'
 			beg_datum, beg_tijd = item['ActueleVertrekTijd'].split("T")
-			beg_tijd = beg_tijd.replace("+0200", "")
+			beg_tijd = beg_tijd.split("+", 1)[0]
 			return_dict['vertrek_tijd'] = beg_datum + " " + beg_tijd
 
 			# Format 'aankomst_tijd'
 			eind_datum, eind_tijd = item['ActueleAankomstTijd'].split("T")
-			eind_tijd = eind_tijd.replace("+0200", "")
+			eind_tijd = eind_tijd.split("+", 1)[0]
 			return_dict['aankomst_tijd'] = eind_datum + " " + eind_tijd
 		else:
 			continue
 	return return_dict
+
+# This function takes a dict and update the json file
+def json_handler(event):
+	json_file = open("config.json", 'r')
+	json_data = json.load(json_file)
+	json_file.close()
+
+	# Update json data
+	json_data.update(event)
+	json_data['requests'] += 1
+	print("JSON DATA:")
+	print(json_data)
+
+	# write json data back
+	json_file = open("config.json", 'w')
+	json_object = json.dumps(json_data, sort_keys=True, indent=4)
+	json_file.write(json_object)
+	json_file.close
 
 # Check if directly called by interpreter for prototyping,
 # if not called directly but by script then the functions
@@ -89,7 +119,7 @@ if __name__ == "__main__":
 			to_station = input("Waar wil je naartoe? ")
 			print(reis_planner(from_station, to_station))
 		elif s == 4:
-			print("Tot ziens!")
+			print("Tot ziens")
 			exit()
 		else:
 			print("Geen geldige invoer")
