@@ -16,7 +16,7 @@ root.option_add("*Font", default_font)
 # ---- STATION INFORMATION WINDOW ----
 def station_info():
 
-	# ---- Function declaration ----
+	# ---- Request station info ----
 	def get_station():
     		station = station_entry.get()
     		request = api_interface.vertrek_tijden(station)
@@ -29,7 +29,7 @@ def station_info():
 	
 	# Setup station window
 	station = Toplevel()
-	station.title('Actuele vertrektijden station')
+	station.title('NS Actuele vertrektijden')
 	station.geometry('700x400')
 	station.resizable(width=False, height=False)
 	station.configure(background='yellow')
@@ -78,6 +78,86 @@ def station_info():
 	output_listbox = Listbox(output_box, yscrollcommand = scrollbar.set ,width=80)
 	output_listbox.place(x=10, y=25)
 
+# ----- REISPLANNER WINDOW -----
+def reisplanner():
+	# Setup reisplanner window
+	planner = Toplevel()
+	planner.title('NS Reisplanner')
+	planner.geometry('700x400')
+	planner.resizable(width=False, height=False)
+	planner.configure(background='yellow')
+
+	# ---- Request route ----
+	def get_route():
+		from_station = from_station_entry.get()
+		to_station = to_station_entry.get()
+		request = api_interface.reis_planner(from_station, to_station)
+
+		# Clear listboxes before new request
+		reisplanner_listbox.delete(0, END)
+
+		for item in request:
+			if item['optimaal'] == False:
+				optimaal = 'Nee'
+			else:
+				optimaal = 'Ja'
+			reisplanner_listbox.insert(END, '{0:<25} {1:<25} {2:<10} {3}'.format(item['vertrek_tijd'], item['aankomst_tijd'], item['aantal_overstappen'], optimaal))
+
+	# Input frame
+	reisplanner_frame = Frame(planner, height=100, width=300, bd=2, relief=SUNKEN)
+	reisplanner_frame.place(x=10, y=10)
+
+	# From station label
+	from_station_label = Label(reisplanner_frame, text='Beginstation:')
+	from_station_label.place(x=10, y=5)
+
+	# From station input
+	from_station_entry = Entry(reisplanner_frame)
+	from_station_entry.place(x=130, y=5)
+
+	# To station label
+	to_station_label = Label(reisplanner_frame, text='Eindstation:')
+	to_station_label.place(x=10, y=35)
+
+	# To station input
+	to_station_entry = Entry(reisplanner_frame)
+	to_station_entry.place(x=130, y=35)
+
+	# Confirm button
+	planner_submit = Button(reisplanner_frame, text='Bevestig', command=get_route)
+	planner_submit.place(x=200, y=65)
+
+	# Output frame
+	output_frame = Frame(planner, height=220, width=550, bd=2, relief=SUNKEN)
+	output_frame.place(x=10, y=130)	
+
+	# Vertrektijd label
+	vertrektijd_label = Label(output_frame, text='Vertrektijd')
+	vertrektijd_label.place(x=10, y=7)
+
+	# Aankomsttijd label
+	aankomsttijd_label = Label(output_frame, text='Aankomsttijd')
+	aankomsttijd_label.place(x=190, y=7)
+
+	# Aantal overstappen
+	overstappen_label = Label(output_frame, text='Overstappen')
+	overstappen_label.place(x=340, y=7)
+
+	# Optimale route
+	optimaal_label = Label(output_frame, text='Optimaal?')
+	optimaal_label.place(x=430, y=7)
+
+	# Scrollbar for output
+	reisplanner_scrollbar = Scrollbar(output_frame)
+	reisplanner_scrollbar.place(x=525, y=25, height=173)
+
+	# Reisplanner listbox
+	reisplanner_listbox = Listbox(output_frame, yscrollcommand = reisplanner_scrollbar.set, width=73)
+	reisplanner_listbox.place(x=10, y=25)
+
+
+
+
 
 # ----- MAIN MENU WINDOW -----
 label = Label(master=root, text='Welkom bij de Nederlandse Spoorwegen',
@@ -107,7 +187,7 @@ label = Label(master=root, text='Weten hoelaat de trein naar huis gaat?',
               foreground = 'yellow')
 label.pack()
 
-button2 = Button(master=root, text='Reisplanner')
+button2 = Button(master=root, text='Reisplanner', command=reisplanner)
 button2.pack(pady=13)
 
 label = Label(master=root, text='Statistieken',
