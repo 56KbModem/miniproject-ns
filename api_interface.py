@@ -1,5 +1,7 @@
 import requests
 import xmltodict
+import json
+from time import localtime, strftime
 
 # Authentication for NS-API @ webservices.ns.nl
 auth_details = ('nick.snel@student.hu.nl', 'CHXwsKlQhEhr4REC2N_wqkS4oxI8SakCb4njn8tIPopejiHJZFj5Lw')
@@ -16,12 +18,17 @@ def test_request():
 
 # This function returns a list of all known
 # train departures from a given station.
-def get_request(station):
+def vertrek_tijden(station):
 	url = 'http://webservices.ns.nl/ns-api-avt?station='
 
 	request_url = url + station
 	response = requests.get(request_url, auth=auth_details)
 	xml_reader = xmltodict.parse(response.text)
+
+	# Add events for json file.
+	event_list = {'last_query': request_url}
+	event_list['last_query_time'] = strftime("%Y-%m-%d %H:%M:%S", localtime())
+	json_handler(event_list)
 
 	# This will return a list of all dictionaries
 	# containing information about leaving trains.
@@ -30,12 +37,10 @@ def get_request(station):
 		return_dict = {}
 		return_dict['rit_nr'] = item['RitNummer']
 		return_dict['eind_best'] = item['EindBestemming']
-
-		datum, tijd = item['VertrekTijd'].split("T")
-		tijd = tijd.split("+", 1)[0]
-
-		return_dict['vertrek_tijd'] = datum + " " + tijd
+		return_dict['vertrek_tijd'] = time_formatting(item['VertrekTijd'])
 		return_dict['trein_soort'] = item['TreinSoort']
+
+		# Add a departuring train data to list of departures
 		vertrekkende_treinen.append(return_dict)
 
 	return vertrekkende_treinen
@@ -49,23 +54,62 @@ def reis_planner(from_station, to_station):
 	response =  requests.get(request_url, auth=auth_details)
 	xml_reader = xmltodict.parse(response.text)
 
+	# Add events for json file.
+	event_list = {'last_query': request_url}
+	event_list['last_query_time'] = strftime("%Y-%m-%d %H:%M:%S", localtime())
+	json_handler(event_list)
+
+	mogelijke_reizen = []
+
 	for item in xml_reader['ReisMogelijkheden']['ReisMogelijkheid']:
-		if item['Optimaal'] == 'true':
+		if item['Optimaal'] == 'true': # Search for most optimal travel direction
 			return_dict = {}
+			return_dict['optimaal'] = True
 			return_dict['aantal_overstappen'] = item['AantalOverstappen']
+			return_dict['vertrek_tijd'] = time_formatting(item['ActueleVertrekTijd'])
+			return_dict['aankomst_tijd'] = time_formatting(item['ActueleAankomstTijd'])
 
-			# Format 'vertrek_tijd'
-			beg_datum, beg_tijd = item['ActueleVertrekTijd'].split("T")
-			beg_tijd = beg_tijd.replace("+0200", "")
-			return_dict['vertrek_tijd'] = beg_datum + " " + beg_tijd
+			# Add optimal direction to 'mogelijke_reizen'
+			mogelijke_reizen.append(return_dict)
 
-			# Format 'aankomst_tijd'
-			eind_datum, eind_tijd = item['ActueleAankomstTijd'].split("T")
-			eind_tijd = eind_tijd.replace("+0200", "")
-			return_dict['aankomst_tijd'] = eind_datum + " " + eind_tijd
-		else:
-			continue
-	return return_dict
+		elif item['Optimaal'] == 'false':
+			return_dict = {}
+			return_dict['optimaal'] = False
+			return_dict['aantal_overstappen'] = item['AantalOverstappen']
+			return_dict['vertrek_tijd'] = time_formatting(item['ActueleVertrekTijd'])
+			return_dict['aankomst_tijd'] = time_formatting(item['ActueleAankomstTijd'])
+
+			# Add additional travel directions to 'mogelijke_reizen'
+			mogelijke_reizen.append(return_dict)
+
+	return mogelijke_reizen
+
+# This function takes a dict and update the json file
+def json_handler(event):
+	json_file = open("config.json", 'r')
+	json_data = json.load(json_file)
+	json_file.close()
+
+	# Update json data
+	json_data.update(event)
+	json_data['requests'] += 1
+	print("JSON DATA:")
+	print(json_data)
+
+	# write json data back
+	json_file = open("config.json", 'w')
+	json_object = json.dumps(json_data, sort_keys=True, indent=4)
+	json_file.write(json_object)
+	json_file.close
+
+# This function formats the time stamp given
+# by the API XML to a more user-friendly format.
+def time_formatting(timestring):
+	beg_datum, beg_tijd = timestring.split("T")
+	beg_tijd = beg_tijd.split("+", 1)[0]
+	formatted_time = beg_datum + " " + beg_tijd
+
+	return formatted_time
 
 # Check if directly called by interpreter for prototyping,
 # if not called directly but by script then the functions
@@ -83,13 +127,13 @@ if __name__ == "__main__":
 			test_request()
 		elif s == 2:
 			station = input("Geef a.u.b. een stationsnaam op: ")
-			print(get_request(station))
+			print(vertrek_tijden(station))
 		elif s == 3:
 			from_station = input("Waar kom je vandaan? ")
 			to_station = input("Waar wil je naartoe? ")
 			print(reis_planner(from_station, to_station))
 		elif s == 4:
-			print("Tot ziens!")
+			print("Tot ziens")
 			exit()
 		else:
 			print("Geen geldige invoer")
