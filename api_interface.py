@@ -4,10 +4,14 @@ import json
 from time import localtime, strftime
 
 # Authentication for NS-API @ webservices.ns.nl
-auth_details = ('nick.snel@student.hu.nl', 'CHXwsKlQhEhr4REC2N_wqkS4oxI8SakCb4njn8tIPopejiHJZFj5Lw')
+json_file = open("config.json", 'r')
+json_data = json.load(json_file)
+json_file.close
 
+api_key = json_data['api_key']
+api_username = json_data['api_username']
 
-print("Dit is een testprogramma voor de NS-API")
+auth_details = (api_username, api_key)
 
 # Test function: download raw xml from NS-API.
 def test_request():
@@ -93,8 +97,6 @@ def json_handler(event):
 	# Update json data
 	json_data.update(event)
 	json_data['requests'] += 1
-	print("JSON DATA:")
-	print(json_data)
 
 	# write json data back
 	json_file = open("config.json", 'w')
