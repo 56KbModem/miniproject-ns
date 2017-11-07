@@ -32,7 +32,7 @@ def get_request(station):
 		return_dict['eind_best'] = item['EindBestemming']
 
 		datum, tijd = item['VertrekTijd'].split("T")
-		tijd = tijd.replace("+0200", "")
+		tijd = tijd.split("+", 1)[0]
 
 		return_dict['vertrek_tijd'] = datum + " " + tijd
 		return_dict['trein_soort'] = item['TreinSoort']
