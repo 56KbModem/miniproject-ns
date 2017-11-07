@@ -1,7 +1,7 @@
 {
     "api_key": "PLACE KEY HERE",
     "api_username": "PLACE USERNAME HERE",
-    "last_query": "http://webservices.ns.nl/ns-api-treinplanner?fromStation=Baarn&toStation=Soest",
-    "last_query_time": "2017-11-06 11:51:08",
-    "requests": 5
+    "last_query": "http://webservices.ns.nl/ns-api-avt?station=Baarn",
+    "last_query_time": "2017-11-07 09:31:18",
+    "requests": 18
 }

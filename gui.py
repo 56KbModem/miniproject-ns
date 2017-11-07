@@ -1,9 +1,9 @@
 from tkinter import *
-import ns_api_test
+import api_interface
 
 def get_station():
     station = station_entry.get()
-    request = ns_api_test.get_request(station)
+    request = api_interface.get_request(station)
 
     # Clear listboxes before new request
     output_listbox.delete(0, END)
