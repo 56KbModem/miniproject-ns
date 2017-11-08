@@ -37,7 +37,7 @@ last_query_label.place(x=10, y=20)
 last_query_text = Label(stats_frame, text=json_data['last_query'])
 last_query_text.place(x=155, y=20)
 
-# aantal queries
+#aantal queries
 last_query_requests = Label (stats_frame, text="Aanvragen:")
 last_query_requests.place(x=10, y=80)
 
