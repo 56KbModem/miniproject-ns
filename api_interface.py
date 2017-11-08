@@ -13,13 +13,20 @@ api_username = json_data['api_username']
 
 auth_details = (api_username, api_key)
 
-# Test function: download raw xml from NS-API.
-def test_request():
-	url = 'http://webservices.ns.nl/ns-api-avt?station=ut'
-	response = requests.get(url, auth=auth_details)
+# This function gets a station list. Useful for
+# Autocompletion in the GUI.
+def get_station_list():
+	request_url = 'http://webservices.ns.nl/ns-api-stations-v2'
+	response = requests.get(request_url, auth=auth_details)
+	xml_reader = xmltodict.parse(response.text)
 
-	print(response.text)
+	stations_namen = []
+	for station in xml_reader['Stations']['Station']:
+		stations_namen.append(station['Namen']['Lang'])
+		if station['Synoniemen'] != None:
+			stations_namen.append(station['Synoniemen']['Synoniem'])
 
+	return stations_namen
 # This function returns a list of all known
 # train departures from a given station.
 def vertrek_tijden(station):
@@ -44,6 +51,10 @@ def vertrek_tijden(station):
 		return_dict['vertrek_tijd'] = time_formatting(item['VertrekTijd'])
 		return_dict['trein_soort'] = item['TreinSoort']
 
+		if 'VertrekVertragingTekst' in item:
+			return_dict['vertraging'] =  item['VertrekVertragingTekst']
+		else:
+			return_dict['vertraging'] = '0 min'
 		# Add a departuring train data to list of departures
 		vertrekkende_treinen.append(return_dict)
 
@@ -64,7 +75,7 @@ def reis_planner(from_station, to_station):
 	json_handler(event_list)
 
 	mogelijke_reizen = []
-
+	tussen_stations = []
 	for item in xml_reader['ReisMogelijkheden']['ReisMogelijkheid']:
 		if item['Optimaal'] == 'true': # Search for most optimal travel direction
 			return_dict = {}
@@ -119,14 +130,14 @@ def time_formatting(timestring):
 if __name__ == "__main__":
 	while True:
 		print("Maak A.U.B. een keuze")
-		print("1: Demo request naar NS-API")
+		print("1: Vraag stations namen op")
 		print("2: Vraag vertrektijden op voor een station")
 		print("3: Plan een reis bij de NS")
 		print("4: Stoppen met script")
 
 		s = int(input("> "))
 		if s == 1:
-			test_request()
+			print(get_station_list())
 		elif s == 2:
 			station = input("Geef a.u.b. een stationsnaam op: ")
 			print(vertrek_tijden(station))

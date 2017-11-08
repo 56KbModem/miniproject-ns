@@ -1,7 +1,7 @@
 {
     "api_key": "CHXwsKlQhEhr4REC2N_wqkS4oxI8SakCb4njn8tIPopejiHJZFj5Lw",
     "api_username": "nick.snel@student.hu.nl",
-    "last_query": "http://webservices.ns.nl/ns-api-avt?station=Amersfoort",
-    "last_query_time": "2017-11-07 11:25:29",
-    "requests": 21
+    "last_query": "http://webservices.ns.nl/ns-api-avt?station=Hilversum",
+    "last_query_time": "2017-11-08 12:25:02",
+    "requests": 53
 }
