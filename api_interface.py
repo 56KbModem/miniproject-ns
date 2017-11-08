@@ -20,11 +20,24 @@ def get_station_list():
 	response = requests.get(request_url, auth=auth_details)
 	xml_reader = xmltodict.parse(response.text)
 
+	# Add events for json file.
+	event_list = {'last_query': request_url}
+	event_list['last_query_time'] = strftime("%Y-%m-%d %H:%M:%S", localtime())
+	json_handler(event_list)
+
+	# Adding the long names and synonyms to a list.
 	stations_namen = []
 	for station in xml_reader['Stations']['Station']:
 		stations_namen.append(station['Namen']['Lang'])
+
+		# Really ugly hack to make sure there are no lists included 
+		# inside the main list.
 		if station['Synoniemen'] != None:
-			stations_namen.append(station['Synoniemen']['Synoniem'])
+			if type(station['Synoniemen']['Synoniem']) is list:
+				for synoniem in station['Synoniemen']['Synoniem']:
+					stations_namen.append(synoniem)
+			else:
+				stations_namen.append(station['Synoniemen']['Synoniem'])
 
 	return stations_namen
 # This function returns a list of all known
