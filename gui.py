@@ -44,25 +44,25 @@ def station_info():
 	# Setup station window
 	station = Toplevel()
 	station.title('NS Actuele vertrektijden')
-	station.geometry('700x400')
+	station.geometry('700x285')
 	station.resizable(width=False, height=False)
 	station.configure(background='yellow')
 
 	# Input box
-	input_box = Frame(station, height=40, width=420, bd=2, relief=SUNKEN)
+	input_box = Frame(station, height=40, width=420, bd=2, relief=SUNKEN, bg='blue')
 	input_box.place(x=10, y=10)
 
 	# Enter Station Label
-	info_label = Label(input_box, text='Voer een station in: ')
-	info_label.place(x=10, y=5)
+	info_label = Label(input_box, bg='blue', fg='yellow', text='Voer een station in: ')
+	info_label.place(x=5, y=7)
 
 	# Enter Station entry
 	#station_entry = Entry(input_box)
-	station_entry = AutocompleteEntry(autocompletelist, input_box, listboxLength=6, width=32, matchesFunction=matches)
-	station_entry.place(x=155, y=5)
+	station_entry = AutocompleteEntry(autocompletelist, input_box, listboxLength=6, width=23, highlightbackground='blue', matchesFunction=matches)
+	station_entry.place(x=150, y=5)
 
 	# Entry Station submit
-	station_submit = Button(input_box, text='Bevestig', command=get_station)
+	station_submit = Button(input_box, text='Bevestig', command=get_station, highlightbackground='blue')
 	station_submit.place(x=330, y=5)
 
 	# Output box
@@ -102,7 +102,7 @@ def reisplanner():
 	# Setup reisplanner window
 	planner = Toplevel()
 	planner.title('NS Reisplanner')
-	planner.geometry('700x400')
+	planner.geometry('572x360')
 	planner.resizable(width=False, height=False)
 	planner.configure(background='yellow')
 
@@ -126,27 +126,27 @@ def reisplanner():
 			reisplanner_listbox.itemconfig(END, bg=colour_var, fg='black')
 
 	# Input frame
-	reisplanner_frame = Frame(planner, height=100, width=300, bd=2, relief=SUNKEN)
+	reisplanner_frame = Frame(planner, height=100, width=300, bd=2, relief=SUNKEN, bg='blue')
 	reisplanner_frame.place(x=10, y=10)
 
 	# From station label
-	from_station_label = Label(reisplanner_frame, text='Beginstation:')
+	from_station_label = Label(reisplanner_frame, bg='blue', fg='yellow', text='Beginstation:')
 	from_station_label.place(x=10, y=5)
 
 	# From station input
-	from_station_entry = Entry(reisplanner_frame)
+	from_station_entry = Entry(reisplanner_frame, highlightbackground='blue')
 	from_station_entry.place(x=130, y=5)
 
 	# To station label
-	to_station_label = Label(reisplanner_frame, text='Eindstation:')
+	to_station_label = Label(reisplanner_frame, bg='blue', fg='yellow', text='Eindstation:')
 	to_station_label.place(x=10, y=35)
 
 	# To station input
-	to_station_entry = Entry(reisplanner_frame)
+	to_station_entry = Entry(reisplanner_frame, highlightbackground='blue')
 	to_station_entry.place(x=130, y=35)
 
 	# Confirm button
-	planner_submit = Button(reisplanner_frame, text='Bevestig', command=get_route)
+	planner_submit = Button(reisplanner_frame, text='Bevestig', command=get_route, highlightbackground='blue')
 	planner_submit.place(x=200, y=65)
 
 	# Output frame
