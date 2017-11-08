@@ -16,4 +16,32 @@ root.configure(bg='white')
 default_font = font.Font(family='Monaco', size=12)
 root.option_add('*Font', default_font)
 
+statistieken_label = Label(root, text='Applicatie statistieken')
+statistieken_label.place(x=10, y=10)
+
+# Main window
+stats_frame = Frame(root, height=300, width=1000, bd=2, relief=SUNKEN)
+stats_frame.place(x=10, y=50)
+
+# tijd van laatste aanroep naar API
+last_query_time_label = Label(stats_frame, text='Gemaakt op: ')
+last_query_time_label.place(x=10, y=50)
+
+last_query_time_text = Label(stats_frame, text=json_data['last_query_time'])
+last_query_time_text.place(x=155, y=50)
+
+# laatste aanroep naar API
+last_query_label = Label(stats_frame, text='Laatste query: ')
+last_query_label.place(x=10, y=20)
+
+last_query_text = Label(stats_frame, text=json_data['last_query'])
+last_query_text.place(x=155, y=20)
+
+# aantal queries
+last_query_requests = Label (stats_frame, text="Aanvragen:")
+last_query_requests.place(x=10, y=80)
+
+last_query_requests = Label(stats_frame, text=json_data['requests'])
+last_query_requests.place(x=155, y=80)
+
 root.mainloop()
