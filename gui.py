@@ -1,6 +1,15 @@
 from tkinter import *
 from tkinter import font
+from autocomplete import AutocompleteEntry
 import api_interface
+import re
+
+# Setup autocomplete list for testing purposes
+autocompletelist = api_interface.get_station_list()
+
+def matches(fieldValue, acListEntry):
+	pattern = re.compile(re.escape(fieldValue) + '.*', re.IGNORECASE)
+	return re.match(pattern, acListEntry)
 
 # ---- Setup main window -----
 root = Tk()
@@ -18,15 +27,20 @@ def station_info():
 
 	# ---- Request station info ----
 	def get_station():
-    		station = station_entry.get()
-    		request = api_interface.vertrek_tijden(station)
+		station = station_entry.get()
+		request = api_interface.vertrek_tijden(station)
 
     		# Clear listboxes before new request
-    		output_listbox.delete(0, END)
+		output_listbox.delete(0, END)
 
-    		for item in request:
-        		output_listbox.insert(END, '{0:<25} {1:<20} {2:<12} {3:>5}'.format(item['eind_best'], item['vertrek_tijd'], item['trein_soort'], item['rit_nr']))
-	
+		for item in request:
+			if item['vertraging'] == '0 min':
+				colour = 'white'
+			else:
+				colour = 'red'
+			output_listbox.insert(END, '{0:<25} {1:<20} {2:<20} {3:>5} {4:>10}'.format(item['eind_best'], item['vertrek_tijd'], item['trein_soort'], item['rit_nr'], item['vertraging']))
+			output_listbox.itemconfig(END, bg=colour, fg='black')
+
 	# Setup station window
 	station = Toplevel()
 	station.title('NS Actuele vertrektijden')
@@ -43,7 +57,8 @@ def station_info():
 	info_label.place(x=10, y=5)
 
 	# Enter Station entry
-	station_entry = Entry(input_box)
+	#station_entry = Entry(input_box)
+	station_entry = AutocompleteEntry(autocompletelist, input_box, listboxLength=6, width=32, matchesFunction=matches)
 	station_entry.place(x=155, y=5)
 
 	# Entry Station submit
@@ -68,14 +83,18 @@ def station_info():
 
 	# Rit nummer label
 	rit_nr_label = Label(output_box, text='Rit nummer')
-	rit_nr_label.place(x=420, y=5)
+	rit_nr_label.place(x=465, y=5)
+
+	# Vertraging label
+	vertraging_label = Label(output_box, text='Vertraging')
+	vertraging_label.place(x=555, y=5)
 
 	# Scrollbar for output
 	scrollbar = Scrollbar(output_box)
 	scrollbar.place(x=651, y=25, height=173)
 
 	# Output listbox
-	output_listbox = Listbox(output_box, yscrollcommand = scrollbar.set ,width=80)
+	output_listbox = Listbox(output_box, yscrollcommand = scrollbar.set ,width=90)
 	output_listbox.place(x=10, y=25)
 
 # ----- REISPLANNER WINDOW -----
@@ -99,9 +118,12 @@ def reisplanner():
 		for item in request:
 			if item['optimaal'] == False:
 				optimaal = 'Nee'
+				colour_var = 'white'
 			else:
 				optimaal = 'Ja'
+				colour_var = 'green'
 			reisplanner_listbox.insert(END, '{0:<25} {1:<25} {2:<10} {3}'.format(item['vertrek_tijd'], item['aankomst_tijd'], item['aantal_overstappen'], optimaal))
+			reisplanner_listbox.itemconfig(END, bg=colour_var, fg='black')
 
 	# Input frame
 	reisplanner_frame = Frame(planner, height=100, width=300, bd=2, relief=SUNKEN)
@@ -210,4 +232,3 @@ peace = Label(master=root,
 peace.pack()
 
 root.mainloop()
-
