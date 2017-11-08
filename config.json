@@ -1,7 +1,7 @@
 {
     "api_key": "CHXwsKlQhEhr4REC2N_wqkS4oxI8SakCb4njn8tIPopejiHJZFj5Lw",
     "api_username": "nick.snel@student.hu.nl",
-    "last_query": "http://webservices.ns.nl/ns-api-treinplanner?fromStation=Almere&toStation=Amsterdam",
-    "last_query_time": "2017-11-08 14:12:24",
-    "requests": 101
+    "last_query": "http://webservices.ns.nl/ns-api-avt?station=Almere",
+    "last_query_time": "2017-11-08 15:44:56",
+    "requests": 115
 }
