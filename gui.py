@@ -1,11 +1,7 @@
 from tkinter import *
 from tkinter import font
-from configparser import ConfigParser
 import api_interface
 import json
-
-# Theme configuration file
-theme = 'theme.ini'
 
 # ---- Setup main window -----
 root = Tk()
@@ -226,35 +222,6 @@ def analytics():
 
 	reload_json()
 
-# ----- Settings window -----
-def settings_window():
-	settings = Toplevel()
-	settings.geometry('300x200')
-	settings.overrideredirect(1)
-	
-	parser = ConfigParser()
-	parser.read(theme)
-	print(parser.get('STATE', 'dark_theme'))
-	
-	# Create frame for all widgets
-	settings_frame = Frame(settings, height=190, width=290, bd=2, relief=SUNKEN)
-	settings_frame.place(x=5, y=5)
-
-	# Button to enable dark mode
-	dark_mode = Button(settings_frame, text='Nacht modus')
-	dark_mode.place(x=10, y=10)
-
-	# Still in progress notification
-	notification_label = Label(settings_frame, text='Aan deze functie wordt nog gewerkt!', fg='red')
-	notification_label.place(x=20, y=50)
-
-	# Button to close settings window
-	close_settings = Button(settings_frame, text='Sluit', command = lambda: settings.destroy())
-	close_settings.place(y=155, x=220)
-
-
-
-
 # ----- MAIN MENU WINDOW -----
 label = Label(master=root, text='Welkom bij de Nederlandse Spoorwegen',
               font=("Courier", 44),
@@ -304,8 +271,5 @@ peace = Label(master=root,
               image=image,
               height=360)
 peace.pack()
-
-settings_button = Button(root, text='Instellingen', command=settings_window)
-settings_button.place(x=883, y=720)
 
 root.mainloop()
