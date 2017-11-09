@@ -181,20 +181,20 @@ def analytics():
 		last_query_requests['text'] = json_data['requests']
 
 	analytics = Toplevel()
-	analytics.title('Statistieken')
-	analytics.geometry('1100x400')
+	analytics.title('Applicatie Statistieken')
+	analytics.geometry('800x200')
 	analytics.resizable(width=False, height=False)
-	analytics.configure(bg='white')
-	default_font = font.Font(family='Monaco', size=12)
-	analytics.option_add('*Font', default_font)
+	analytics.configure(bg='yellow')
 
-	statistieken_label = Label(analytics, text='Applicatie statistieken')
-	statistieken_label.place(x=10, y=10)
+	#default_font = font.Font(family='Monaco', size=12)
+	#analytics.option_add('*Font', default_font)
+
+	statistieken_label = Label(analytics, text='Applicatie statistieken', fg='blue', bg='yellow')
+	statistieken_label.place(x=10, y=5)
 
 	# Main window
-	stats_frame = Frame(analytics, height=300, width=1000, bd=2, relief=SUNKEN)
-	stats_frame.place(x=10, y=50)
-
+	stats_frame = Frame(analytics, height=160, width=777, bd=2, relief=SUNKEN)
+	stats_frame.place(x=10, y=30)
 
 	# tijd van laatste aanroep naar API
 	last_query_time_label = Label(stats_frame, text='Gemaakt op: ')
@@ -221,8 +221,6 @@ def analytics():
 	reload_button.place(x=400, y=100)
 
 	reload_json()
-
-
 
 # ----- MAIN MENU WINDOW -----
 label = Label(master=root, text='Welkom bij de Nederlandse Spoorwegen',
@@ -255,7 +253,7 @@ label.pack()
 button2 = Button(master=root, text='Reisplanner', command=reisplanner)
 button2.pack(pady=13)
 
-label = Label(master=root, text='Statistieken',
+label = Label(master=root, text='Geef statistieken weer',
                  font=("Courier", 20),
                  width=200,
                  height=0,
@@ -263,7 +261,7 @@ label = Label(master=root, text='Statistieken',
                  foreground = 'blue')
 label.pack()
 
-button3 = Button(master=root, text='Zoek statistieken', command=analytics)
+button3 = Button(master=root, text='Statistieken', command=analytics)
 button3.pack(pady=15)
 
 label.pack()
